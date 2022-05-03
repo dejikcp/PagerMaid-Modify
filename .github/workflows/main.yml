@@ -62,6 +62,18 @@ jobs:
             -f Dockerfile \
             .
           IMAGES+=( "${DOCKERHUB_REPOSITORY}:latest-arm64-v8" )
+
+          echo "Build s390x"
+            --cache-from "type=local,src=/tmp/.buildx-cache" \
+            --cache-to "type=local,dest=/tmp/.buildx-cache" \
+            --output "type=image,push=true" \
+            --platform linux/s390x \
+            --build-arg "S6_ARCH=s390x" \
+            --tag "${DOCKERHUB_REPOSITORY}:latest-s390x" \
+            -f Dockerfile \
+            .
+          IMAGES+=( "${DOCKERHUB_REPOSITORY}:latest-s390x" )
+
           
           echo "Create manifest lists"
           docker manifest create "${DOCKERHUB_REPOSITORY}:latest" "${IMAGES[@]}"
